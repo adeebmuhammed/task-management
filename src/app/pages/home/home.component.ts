@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Task } from '../../interfaces/task';
 import { TaskService } from '../../services/task.service';
 import { TaskFormComponent } from '../../components/shared/task-form/task-form.component';
+import { Router } from '@angular/router';
+import { ROUTES_PATHS } from '../../constants/routes';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +19,10 @@ export class HomeComponent implements OnInit {
   errorMessage = '';
   selectedTask: Task | null = null;
 
-  constructor(private taskService: TaskService) {}
+  constructor() {}
+
+  private taskService = inject(TaskService);
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.loadTasks();
@@ -85,7 +90,7 @@ export class HomeComponent implements OnInit {
   viewTask(task: Task): void {
     this.selectedTask = task;
 
-    console.log('Viewing task:', task);
+    this.router.navigate([ROUTES_PATHS.TASK_DETAILS, task.id]);
   }
 
   onTaskAdded(task: Task): void {

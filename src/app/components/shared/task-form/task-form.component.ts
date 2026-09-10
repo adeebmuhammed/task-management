@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -41,13 +41,31 @@ export class TaskFormComponent implements OnInit,OnChanges {
     this.initializeForm();
   }
 
-  ngOnChanges(): void {
-    if (this.selectedTask) {
+  ngOnChanges(changes: SimpleChanges): void {
+
+    if (
+      changes['selectedTask'] &&
+      this.selectedTask &&
+      this.taskForm
+    ) {
       this.taskForm.patchValue({
         title: this.selectedTask.title,
         description: this.selectedTask.description,
         deadline: this.selectedTask.deadline,
-        status: this.selectedTask.status,
+        status: this.selectedTask.status
+      });
+    }
+
+    if (
+      changes['isEditMode'] &&
+      !this.isEditMode &&
+      this.taskForm
+    ) {
+      this.taskForm.reset({
+        title: '',
+        description: '',
+        deadline: '',
+        status: 'Pending'
       });
     }
   }
@@ -84,41 +102,6 @@ export class TaskFormComponent implements OnInit,OnChanges {
     }
 
     return null;
-  }
-
-  //open add taskmodal
-  openAddTaskModal(): void {
-    console.log("add task modal");
-    
-    this.isEditMode = false;
-
-    this.selectedTask = null;
-
-    this.taskForm.reset({
-      title: '',
-      description: '',
-      deadline: '',
-      status: 'Pending',
-    });
-
-    this.taskForm.markAsPristine();
-    this.taskForm.markAsUntouched();
-  }
-
-  //open edit task modal
-  openEditTaskModal(task: Task): void {
-    console.log(task);
-    
-    this.isEditMode = true;
-
-    this.selectedTask = task;
-
-    this.taskForm.patchValue({
-      title: task.title,
-      description: task.description,
-      deadline: task.deadline,
-      status: task.status,
-    });
   }
 
   onSubmit(): void {

@@ -1,0 +1,1 @@
+export const tasksUrl = 'assets/tasks.json';

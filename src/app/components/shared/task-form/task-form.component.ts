@@ -1,125 +1,63 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { Task, TaskStatus } from '../../../interfaces/task';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-task-form',
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './task-form.component.html',
-  styleUrl: './task-form.component.scss'
+  styleUrl: './task-form.component.scss',
 })
 export class TaskFormComponent implements OnInit {
   tasks: Task[] = [];
-
   taskForm!: FormGroup;
-
-  isEditMode = false;
-
-  selectedTask: Task | null = null;
-
   isLoading = false;
-
   errorMessage = '';
-
   minDate = '';
+
+  @Input() isEditMode = false;
+  @Input() selectedTask: Task | null = null;
+
+  @Output() taskAdded = new EventEmitter<Task>();
+  @Output() taskUpdated = new EventEmitter<Task>();
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient
+    private http: HttpClient,
   ) {}
 
   ngOnInit(): void {
-
+    
     this.minDate = this.formatDate(new Date());
 
     this.initializeForm();
-
-    this.loadTasks();
   }
 
-  /**
-   * Initialize Reactive Form
-   */
+  //intialize form with validators
+
   private initializeForm(): void {
-
     this.taskForm = this.fb.group({
+      title: ['', [Validators.required, Validators.maxLength(100)]],
 
-      title: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(100)
-        ]
-      ],
+      description: ['', [Validators.required, Validators.maxLength(500)]],
 
-      description: [
-        '',
-        [
-          Validators.required,
-          Validators.maxLength(500)
-        ]
-      ],
+      deadline: ['', [Validators.required, this.futureDateValidator]],
 
-      deadline: [
-        '',
-        [
-          Validators.required,
-          this.futureDateValidator
-        ]
-      ],
-
-      status: [
-        'Pending',
-        Validators.required
-      ]
-
+      status: ['Pending', Validators.required],
     });
   }
 
-  /**
-   * Load tasks from assets/tasks.json
-   */
-  loadTasks(): void {
-
-    this.isLoading = true;
-
-    this.errorMessage = '';
-
-    this.http
-      .get<Task[]>('assets/tasks.json')
-      .subscribe({
-
-        next: (tasks) => {
-
-          this.tasks = tasks;
-
-          this.isLoading = false;
-
-        },
-
-        error: (error) => {
-
-          console.error('Failed to load tasks:', error);
-
-          this.errorMessage =
-            'Unable to load tasks. Please try again.';
-
-          this.isLoading = false;
-
-        }
-
-      });
-  }
-
-  /**
-   * Custom deadline validator
-   */
-  futureDateValidator(
-    control: AbstractControl
-  ): ValidationErrors | null {
-
+  //date validator
+  futureDateValidator(control: AbstractControl): ValidationErrors | null {
     if (!control.value) {
       return null;
     }
@@ -131,21 +69,18 @@ export class TaskFormComponent implements OnInit {
     today.setHours(0, 0, 0, 0);
 
     if (selectedDate < today) {
-
       return {
-        pastDate: true
+        pastDate: true,
       };
-
     }
 
     return null;
   }
 
-  /**
-   * Open Add Task modal
-   */
+  //open add taskmodal
   openAddTaskModal(): void {
-
+    console.log("add task modal");
+    
     this.isEditMode = false;
 
     this.selectedTask = null;
@@ -154,18 +89,15 @@ export class TaskFormComponent implements OnInit {
       title: '',
       description: '',
       deadline: '',
-      status: 'Pending'
+      status: 'Pending',
     });
 
     this.taskForm.markAsPristine();
     this.taskForm.markAsUntouched();
   }
 
-  /**
-   * Open Edit Task modal
-   */
+  //open edit task modal
   openEditTaskModal(task: Task): void {
-
     this.isEditMode = true;
 
     this.selectedTask = task;
@@ -174,18 +106,12 @@ export class TaskFormComponent implements OnInit {
       title: task.title,
       description: task.description,
       deadline: task.deadline,
-      status: task.status
+      status: task.status,
     });
-
   }
 
-  /**
-   * Add / Update Task
-   */
   onSubmit(): void {
-
     if (this.taskForm.invalid) {
-
       this.taskForm.markAllAsTouched();
 
       return;
@@ -194,30 +120,21 @@ export class TaskFormComponent implements OnInit {
     const formValue = this.taskForm.value;
 
     if (this.isEditMode && this.selectedTask) {
-
       this.updateTask(formValue);
-
     } else {
-
       this.addTask(formValue);
-
     }
-
   }
 
-  /**
-   * Add new task
-   */
+  //add task
   private addTask(formValue: {
     title: string;
     description: string;
     deadline: string;
     status: TaskStatus;
   }): void {
-
     const newTask: Task = {
-
-      id: this.generateTaskId(),
+      id: Date.now(),
 
       title: formValue.title.trim(),
 
@@ -225,155 +142,76 @@ export class TaskFormComponent implements OnInit {
 
       deadline: formValue.deadline,
 
-      status: formValue.status
-
+      status: formValue.status,
     };
 
-    this.tasks = [
-      ...this.tasks,
-      newTask
-    ];
-
-    console.log('Task added:', newTask);
+    this.taskAdded.emit(newTask);
 
     this.closeModal();
-
   }
 
-  /**
-   * Update existing task
-   */
+  //update task
   private updateTask(formValue: {
     title: string;
     description: string;
     deadline: string;
     status: TaskStatus;
   }): void {
-
     if (!this.selectedTask) {
       return;
     }
 
-    this.tasks = this.tasks.map(task => {
+    const updatedTask: Task = {
+      ...this.selectedTask,
 
-      if (task.id !== this.selectedTask?.id) {
-        return task;
-      }
+      title: formValue.title.trim(),
 
-      return {
-        ...task,
+      description: formValue.description.trim(),
 
-        title: formValue.title.trim(),
+      deadline: formValue.deadline,
 
-        description: formValue.description.trim(),
+      status: formValue.status,
+    };
 
-        deadline: formValue.deadline,
-
-        status: formValue.status
-
-      };
-
-    });
-
-    console.log(
-      'Task updated:',
-      this.selectedTask.id
-    );
+    this.taskUpdated.emit(updatedTask);
 
     this.closeModal();
-
   }
 
-  /**
-   * Delete task
-   */
-  deleteTask(task: Task): void {
-
-    const confirmed = confirm(
-      `Are you sure you want to delete "${task.title}"?`
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    this.tasks = this.tasks.filter(
-      item => item.id !== task.id
-    );
-
-    console.log('Task deleted:', task.id);
-
-  }
-
-  /**
-   * View task
-   */
-  viewTask(task: Task): void {
-
-    this.selectedTask = task;
-
-    console.log('Viewing task:', task);
-
-    // You can later open a separate
-    // View Task modal here.
-  }
-
-  /**
-   * Generate ID for newly added task
-   */
+  //generate unique task id
   private generateTaskId(): number {
-
     if (this.tasks.length === 0) {
       return 1;
     }
 
-    return Math.max(
-      ...this.tasks.map(task => task.id)
-    ) + 1;
-
+    return Math.max(...this.tasks.map((task) => task.id)) + 1;
   }
 
-  /**
-   * Format date for HTML date input
-   */
+  //date formatting
   private formatDate(date: Date): string {
-
     const year = date.getFullYear();
 
-    const month = String(
-      date.getMonth() + 1
-    ).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
 
-    const day = String(
-      date.getDate()
-    ).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   }
 
-  /**
-   * Close Bootstrap modal
-   */
+  //close modal
   private closeModal(): void {
-
-    const modalElement =
-      document.getElementById('taskModal');
+    const modalElement = document.getElementById('taskModal');
 
     if (!modalElement) {
       return;
     }
 
-    const modal =
-      (window as any).bootstrap?.Modal
-        .getInstance(modalElement);
+    const modal = (window as any).bootstrap?.Modal.getInstance(modalElement);
 
     modal?.hide();
-
   }
 
-  /**
-   * Form getters
-   */
+  //form getters
   get titleControl(): AbstractControl {
     return this.taskForm.get('title')!;
   }

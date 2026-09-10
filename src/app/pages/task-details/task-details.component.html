@@ -1,0 +1,68 @@
+@if (selectedTask) {
+  <div class="task-details">
+
+    <!-- Header -->
+    <div class="details-header">
+      <div>
+        <span class="details-label">TASK DETAILS</span>
+        <h3>{{ selectedTask.title }}</h3>
+      </div>
+
+      <span
+        class="status-badge"
+        [class.pending]="selectedTask.status === 'Pending'"
+        [class.in-progress]="selectedTask.status === 'In Progress'"
+        [class.completed]="selectedTask.status === 'Completed'"
+      >
+        <i
+          class="bi"
+          [class.bi-circle]="selectedTask.status === 'Pending'"
+          [class.bi-arrow-repeat]="selectedTask.status === 'In Progress'"
+          [class.bi-check-circle-fill]="selectedTask.status === 'Completed'"
+        ></i>
+
+        {{ selectedTask.status }}
+      </span>
+    </div>
+
+    <!-- Description -->
+    <div class="detail-section">
+      <div class="section-title">
+        <i class="bi bi-text-left"></i>
+        <span>Description</span>
+      </div>
+
+      <p class="description">
+        {{ selectedTask.description }}
+      </p>
+    </div>
+
+    <!-- Task information -->
+    <div class="task-info">
+
+      <div class="info-item">
+        <div class="info-icon">
+          <i class="bi bi-calendar3"></i>
+        </div>
+
+        <div>
+          <span class="info-label">Deadline</span>
+          <strong>{{ selectedTask.deadline | date: 'dd MMM yyyy' }}</strong>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">
+          <i class="bi bi-hash"></i>
+        </div>
+
+        <div>
+          <span class="info-label">Task ID</span>
+          <strong>#{{ selectedTask.id }}</strong>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+}

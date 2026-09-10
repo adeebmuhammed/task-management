@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -17,8 +17,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.scss',
 })
-export class TaskFormComponent implements OnInit {
-  tasks: Task[] = [];
+export class TaskFormComponent implements OnInit,OnChanges {
   taskForm!: FormGroup;
   isLoading = false;
   errorMessage = '';
@@ -42,8 +41,18 @@ export class TaskFormComponent implements OnInit {
     this.initializeForm();
   }
 
-  //intialize form with validators
+  ngOnChanges(): void {
+    if (this.selectedTask) {
+      this.taskForm.patchValue({
+        title: this.selectedTask.title,
+        description: this.selectedTask.description,
+        deadline: this.selectedTask.deadline,
+        status: this.selectedTask.status,
+      });
+    }
+  }
 
+  //intialize form with validators
   private initializeForm(): void {
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(100)]],
@@ -98,6 +107,8 @@ export class TaskFormComponent implements OnInit {
 
   //open edit task modal
   openEditTaskModal(task: Task): void {
+    console.log(task);
+    
     this.isEditMode = true;
 
     this.selectedTask = task;
@@ -146,8 +157,6 @@ export class TaskFormComponent implements OnInit {
     };
 
     this.taskAdded.emit(newTask);
-
-    this.closeModal();
   }
 
   //update task
@@ -174,17 +183,6 @@ export class TaskFormComponent implements OnInit {
     };
 
     this.taskUpdated.emit(updatedTask);
-
-    this.closeModal();
-  }
-
-  //generate unique task id
-  private generateTaskId(): number {
-    if (this.tasks.length === 0) {
-      return 1;
-    }
-
-    return Math.max(...this.tasks.map((task) => task.id)) + 1;
   }
 
   //date formatting
@@ -196,19 +194,6 @@ export class TaskFormComponent implements OnInit {
     const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
-  }
-
-  //close modal
-  private closeModal(): void {
-    const modalElement = document.getElementById('taskModal');
-
-    if (!modalElement) {
-      return;
-    }
-
-    const modal = (window as any).bootstrap?.Modal.getInstance(modalElement);
-
-    modal?.hide();
   }
 
   //form getters

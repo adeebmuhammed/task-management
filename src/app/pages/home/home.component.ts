@@ -46,8 +46,6 @@ export class HomeComponent implements OnInit {
 
   // Open add task modal
   openAddTaskModal(): void {
-    console.log("add task clicked");
-    
     this.selectedTask = null;
     this.isEditMode = false;
   }
@@ -56,6 +54,18 @@ export class HomeComponent implements OnInit {
   openEditTaskModal(task: Task): void {
     this.selectedTask = task;
     this.isEditMode = true;
+  }
+
+  private closeModal(): void {
+    const modalElement = document.getElementById('taskModal');
+
+    if (!modalElement) {
+      return;
+    }
+
+    const modal = (window as any).bootstrap?.Modal.getInstance(modalElement);
+
+    modal?.hide();
   }
 
   //delete task
@@ -76,23 +86,17 @@ export class HomeComponent implements OnInit {
     this.selectedTask = task;
 
     console.log('Viewing task:', task);
-
-    // Open view modal here
   }
 
-  /**
-   * Receive newly added task
-   */
   onTaskAdded(task: Task): void {
     this.tasks = [...this.tasks, task];
+    this.closeModal();
   }
 
-  /**
-   * Receive updated task
-   */
   onTaskUpdated(updatedTask: Task): void {
     this.tasks = this.tasks.map((task) =>
       task.id === updatedTask.id ? updatedTask : task,
     );
+    this.closeModal();
   }
 }

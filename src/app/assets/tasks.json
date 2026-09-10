@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Design landing page",
+    "description": "Create the main landing page design and prepare it for development.",
+    "deadline": "2026-09-12",
+    "status": "Pending"
+  },
+  {
+    "id": 2,
+    "title": "Implement authentication",
+    "description": "Add login, registration and authentication flow to the application.",
+    "deadline": "2026-09-15",
+    "status": "In Progress"
+  },
+  {
+    "id": 3,
+    "title": "Create database models",
+    "description": "Design and implement the required MongoDB schemas for the project.",
+    "deadline": "2026-09-10",
+    "status": "Completed"
+  },
+  {
+    "id": 4,
+    "title": "Write API documentation",
+    "description": "Document all available API endpoints and their request parameters.",
+    "deadline": "2026-09-18",
+    "status": "Pending"
+  }
+] 

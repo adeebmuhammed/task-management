@@ -36,6 +36,8 @@ export class HomeComponent implements OnInit {
     this.taskService.getTasks().subscribe({
       next: (tasks) => {
         this.tasks = tasks;
+        console.log(this.tasks);
+
         this.isLoading = false;
       },
 
@@ -83,25 +85,21 @@ export class HomeComponent implements OnInit {
       return;
     }
 
-    this.tasks = this.tasks.filter((item) => item.id !== task.id);
+    this.taskService.deleteTask(task.id);
   }
 
   //view task
   viewTask(task: Task): void {
-    this.selectedTask = task;
-
     this.router.navigate([ROUTES_PATHS.TASK_DETAILS, task.id]);
   }
 
   onTaskAdded(task: Task): void {
-    this.tasks = [...this.tasks, task];
+    this.taskService.addTask(task);
     this.closeModal();
   }
 
   onTaskUpdated(updatedTask: Task): void {
-    this.tasks = this.tasks.map((task) =>
-      task.id === updatedTask.id ? updatedTask : task,
-    );
+    this.taskService.updateTask(updatedTask);
     this.closeModal();
   }
 }

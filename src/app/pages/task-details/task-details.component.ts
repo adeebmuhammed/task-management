@@ -29,6 +29,8 @@ export class TaskDetailsComponent implements OnInit {
     this.taskService.getTaskById(taskId).subscribe({
       next: (task) => {
         this.selectedTask = task || null;
+        console.log(this.selectedTask);
+        
       },
       error: (error) => {
         console.error('Failed to load task:', error);

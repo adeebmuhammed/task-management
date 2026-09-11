@@ -26,6 +26,12 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTasks();
+
+    this.taskService.tasks$.subscribe({
+      next: (tasks) => {
+        this.tasks = tasks;
+      },
+    });
   }
 
   //load tasks
@@ -36,8 +42,6 @@ export class HomeComponent implements OnInit {
     this.taskService.getTasks().subscribe({
       next: (tasks) => {
         this.tasks = tasks;
-        console.log(this.tasks);
-
         this.isLoading = false;
       },
 
@@ -94,6 +98,8 @@ export class HomeComponent implements OnInit {
   }
 
   onTaskAdded(task: Task): void {
+    console.log('task added', task);
+
     this.taskService.addTask(task);
     this.closeModal();
   }

@@ -17,38 +17,48 @@ export class TaskService {
   constructor(private http: HttpClient) {}
 
   getTasks(): Observable<Task[]> {
-    if (this.tasksSubject.value.length > 0) {
-      return this.tasks$;
+    if (this.tasksSubject.value.length === 0) {
+      return this.http.get<Task[]>(this.tasksUrl).pipe(
+        tap((tasks) => {
+          this.tasksSubject.next(tasks);
+        }),
+        map(() => this.tasksSubject.value)
+      );
     }
 
-    return this.http
-      .get<Task[]>(this.tasksUrl)
-      .pipe(tap((tasks) => this.tasksSubject.next(tasks)));
+    return this.tasks$;
   }
 
   getTaskById(id: number): Observable<Task | undefined> {
     return this.tasks$.pipe(
-      map((tasks) => tasks.find((task) => task.id === id)),
+      map((tasks) => tasks.find((task) => task.id === id))
     );
   }
 
   addTask(task: Task): void {
-    const tasks = this.tasksSubject.value;
+    const currentTasks = this.tasksSubject.value;
 
-    this.tasksSubject.next([...tasks, task]);
+    this.tasksSubject.next([
+      ...currentTasks,
+      task
+    ]);
   }
 
   updateTask(updatedTask: Task): void {
-    const tasks = this.tasksSubject.value.map((task) =>
-      task.id === updatedTask.id ? updatedTask : task,
+    const updatedTasks = this.tasksSubject.value.map((task) =>
+      task.id === updatedTask.id
+        ? updatedTask
+        : task
     );
 
-    this.tasksSubject.next(tasks);
+    this.tasksSubject.next(updatedTasks);
   }
 
   deleteTask(id: number): void {
-    const tasks = this.tasksSubject.value.filter((task) => task.id !== id);
+    const updatedTasks = this.tasksSubject.value.filter(
+      (task) => task.id !== id
+    );
 
-    this.tasksSubject.next(tasks);
+    this.tasksSubject.next(updatedTasks);
   }
 }

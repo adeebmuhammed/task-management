@@ -178,3 +178,49 @@
     grid-template-columns: 1fr;
   }
 }
+.comments-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.add-comment {
+  margin-top: 1rem;
+}
+
+.add-comment textarea {
+  resize: vertical;
+  min-height: 90px;
+  border-color: #dee2e6;
+}
+
+.add-comment textarea:focus {
+  border-color: #adb5bd;
+  box-shadow: 0 0 0 0.15rem rgba(0, 0, 0, 0.05);
+}
+
+.comment-submit {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.comments-list {
+  margin-top: 1.5rem;
+}
+
+.empty-comments {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #6c757d;
+}
+
+.empty-comments i {
+  font-size: 1.75rem;
+  color: #adb5bd;
+}
+
+.empty-comments p {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+}

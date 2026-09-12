@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
-import { Task } from '../interfaces/task';
-import { tasksUrl } from '../constants/constants';
+import { Task } from '../../interfaces/task';
+import { tasksUrl } from '../../constants/constants';
 
 @Injectable({
   providedIn: 'root',

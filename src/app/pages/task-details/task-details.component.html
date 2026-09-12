@@ -1,6 +1,5 @@
 @if (selectedTask) {
   <div class="task-details">
-
     <!-- Header -->
     <div class="details-header">
       <div>
@@ -37,7 +36,6 @@
 
     <!-- Task information -->
     <div class="task-info">
-
       <div class="info-item">
         <div class="info-icon">
           <i class="bi bi-calendar3"></i>
@@ -45,7 +43,7 @@
 
         <div>
           <span class="info-label">Deadline</span>
-          <strong>{{ selectedTask.deadline | date: 'dd MMM yyyy' }}</strong>
+          <strong>{{ selectedTask.deadline | date: "dd MMM yyyy" }}</strong>
         </div>
       </div>
 
@@ -59,8 +57,54 @@
           <strong>#{{ selectedTask.id }}</strong>
         </div>
       </div>
-
     </div>
 
+    <!-- Comments -->
+    <div class="comments-section">
+      <div class="section-title">
+        <i class="bi bi-chat-left-text"></i>
+        <span>Comments</span>
+      </div>
+
+      <!-- Add Comment -->
+      <div class="add-comment">
+        <textarea
+          class="form-control"
+          rows="3"
+          placeholder="Write a comment..."
+          [(ngModel)]="newComment"
+        ></textarea>
+
+        <div class="comment-submit">
+          <button
+            type="button"
+            class="btn btn-dark"
+            [disabled]="!newComment.trim()"
+            (click)="addComment()"
+          >
+            <i class="bi bi-send me-2"></i>
+            Add Comment
+          </button>
+        </div>
+      </div>
+
+      <!-- Existing Comments -->
+      @if (comments.length > 0) {
+        <div class="comments-list">
+          @for (comment of comments; track comment.id) {
+            <app-comment-item
+              [comment]="comment"
+              (replyAdded)="addReply($event)"
+            ></app-comment-item>
+          }
+        </div>
+      } @else {
+        <div class="empty-comments">
+          <i class="bi bi-chat-square-text"></i>
+
+          <p>No comments yet. Be the first to comment.</p>
+        </div>
+      }
+    </div>
   </div>
 }

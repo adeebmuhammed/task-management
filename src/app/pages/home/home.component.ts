@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { Task } from '../../interfaces/task';
-import { TaskService } from '../../services/task.service';
+import { TaskService } from '../../services/task/task.service';
 import { TaskFormComponent } from '../../components/shared/task-form/task-form.component';
 import { Router } from '@angular/router';
 import { ROUTES_PATHS } from '../../constants/routes';

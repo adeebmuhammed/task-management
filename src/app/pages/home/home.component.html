@@ -110,9 +110,7 @@
                       {{ task.title }}
                     </div>
 
-                    <div class="task-description">
-                      {{ task.description }}
-                    </div>
+                    <div class="task-description" [innerHTML]="task.description"></div>
                   </div>
 
                   <!-- Deadline -->

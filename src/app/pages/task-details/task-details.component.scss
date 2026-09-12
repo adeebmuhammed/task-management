@@ -85,6 +85,37 @@
   line-height: 1.6;
 }
 
+.description {
+  color: #495057;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.description p {
+  margin-bottom: 12px;
+}
+
+.description strong {
+  font-weight: 600;
+}
+
+.description em {
+  font-style: italic;
+}
+
+.description u {
+  text-decoration: underline;
+}
+
+.description ul {
+  padding-left: 22px;
+  margin: 10px 0;
+}
+
+.description li {
+  margin-bottom: 5px;
+}
+
 /* Information */
 
 .task-info {

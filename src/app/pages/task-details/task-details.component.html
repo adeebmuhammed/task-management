@@ -32,9 +32,7 @@
         <span>Description</span>
       </div>
 
-      <p class="description">
-        {{ selectedTask.description }}
-      </p>
+      <p class="description" [innerHTML]="selectedTask.description"></p>
     </div>
 
     <!-- Task information -->

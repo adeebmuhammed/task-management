@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -10,18 +19,24 @@ import {
 } from '@angular/forms';
 import { Task, TaskStatus } from '../../../interfaces/task';
 import { HttpClient } from '@angular/common/http';
+import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
+import { ToolbarType } from '../../../constants/constants';
 
 @Component({
   selector: 'app-task-form',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, NgxEditorModule],
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.scss',
 })
-export class TaskFormComponent implements OnInit,OnChanges {
+export class TaskFormComponent implements OnInit, OnChanges, OnDestroy {
   taskForm!: FormGroup;
   isLoading = false;
   errorMessage = '';
   minDate = '';
+
+  editor!: Editor;
+
+  toolbar: Toolbar = ToolbarType;
 
   @Input() isEditMode = false;
   @Input() selectedTask: Task | null = null;
@@ -35,39 +50,35 @@ export class TaskFormComponent implements OnInit,OnChanges {
   ) {}
 
   ngOnInit(): void {
-    
     this.minDate = this.formatDate(new Date());
 
     this.initializeForm();
+
+    this.editor = new Editor();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-
-    if (
-      changes['selectedTask'] &&
-      this.selectedTask &&
-      this.taskForm
-    ) {
+    if (changes['selectedTask'] && this.selectedTask && this.taskForm) {
       this.taskForm.patchValue({
         title: this.selectedTask.title,
         description: this.selectedTask.description,
         deadline: this.selectedTask.deadline,
-        status: this.selectedTask.status
+        status: this.selectedTask.status,
       });
     }
 
-    if (
-      changes['isEditMode'] &&
-      !this.isEditMode &&
-      this.taskForm
-    ) {
+    if (changes['isEditMode'] && !this.isEditMode && this.taskForm) {
       this.taskForm.reset({
         title: '',
         description: '',
         deadline: '',
-        status: 'Pending'
+        status: 'Pending',
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.editor.destroy();
   }
 
   //intialize form with validators

@@ -64,7 +64,7 @@ The nested comment structure is implemented recursively using a reusable Angular
 
 ## Tech Stack
 
-* **Angular 21**
+* **Angular**
 * **TypeScript**
 * **HTML5**
 * **SCSS**
@@ -89,6 +89,8 @@ src/
 │   │   ├── shared/
 │   │        ├── task-form
 │   │        ├── comment-item
+│   │   ├── header/
+│   │   ├── footer/
 │   │
 │   ├── services/
 │   │   ├── task/

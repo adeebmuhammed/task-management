@@ -5,10 +5,13 @@ import { TaskService } from '../../services/task/task.service';
 import { TaskFormComponent } from '../../components/shared/task-form/task-form.component';
 import { Router } from '@angular/router';
 import { ROUTES_PATHS } from '../../constants/routes';
+import { HeaderComponent } from '../../components/header/header.component';
+import { FooterComponent } from '../../components/footer/footer.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, TaskFormComponent],
+  imports: [CommonModule, TaskFormComponent, HeaderComponent, FooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -18,8 +21,6 @@ export class HomeComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   selectedTask: Task | null = null;
-
-  constructor() {}
 
   private taskService = inject(TaskService);
   private router = inject(Router);
@@ -80,14 +81,23 @@ export class HomeComponent implements OnInit {
   }
 
   //delete task
-  deleteTask(task: Task): void {
-    const confirmed = confirm(
-      `Are you sure you want to delete "${task.title}"?`,
-    );
+  async deleteTask(task: Task): Promise<void> {
+    const result = await Swal.fire({
+    title: 'Delete this task?',
+    text: `"${task.title}" will be permanently removed.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Delete',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#b3413a', // matches --danger
+    cancelButtonColor: '#6b6863',  // matches --ink-soft
+    reverseButtons: true,
+    focusCancel: true,
+  });
 
-    if (!confirmed) {
-      return;
-    }
+  if (!result.isConfirmed) {
+    return;
+  }
 
     this.taskService.deleteTask(task.id);
   }
@@ -98,13 +108,27 @@ export class HomeComponent implements OnInit {
   }
 
   onTaskAdded(task: Task): void {
-    console.log('task added', task);
+    Swal.fire({
+      icon: 'success',
+      title: 'Task Added',
+      text: `Task added successfully!`,
+      timer: 2000,
+      showConfirmButton: false,
+    });
 
     this.taskService.addTask(task);
     this.closeModal();
   }
 
   onTaskUpdated(updatedTask: Task): void {
+    Swal.fire({
+      icon: 'success',
+      title: 'Task Updated',
+      text: `Task updated successfully!`,
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
     this.taskService.updateTask(updatedTask);
     this.closeModal();
   }

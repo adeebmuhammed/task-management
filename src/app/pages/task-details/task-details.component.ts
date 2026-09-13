@@ -7,10 +7,12 @@ import { CommentService } from '../../services/comment/comment.service';
 import { Comment } from '../../interfaces/comment';
 import { CommentItemComponent } from '../../components/shared/comment-item/comment-item.component';
 import { FormsModule } from '@angular/forms';
+import { HeaderComponent } from '../../components/header/header.component';
+import { FooterComponent } from '../../components/footer/footer.component';
 
 @Component({
   selector: 'app-task-details',
-  imports: [DatePipe,CommentItemComponent,FormsModule],
+  imports: [DatePipe,CommentItemComponent,FormsModule,HeaderComponent,FooterComponent],
   templateUrl: './task-details.component.html',
   styleUrl: './task-details.component.scss',
 })
@@ -20,13 +22,11 @@ export class TaskDetailsComponent implements OnInit {
 
   selectedTask: Task | null = null;
 
-  constructor() {}
-
   private activatedRoute = inject(ActivatedRoute);
   private taskService = inject(TaskService);
   private commentService = inject(CommentService);
 
-  taskId: number = Number(this.activatedRoute.snapshot.paramMap.get('id') || '');
+  taskId = Number(this.activatedRoute.snapshot.paramMap.get('id') || '');
 
   ngOnInit(): void {
     this.loadTaskDetails(this.taskId);

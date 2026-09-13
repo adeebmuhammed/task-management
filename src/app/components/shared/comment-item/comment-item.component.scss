@@ -1,12 +1,30 @@
 .comment-item {
-  margin-bottom: 1rem;
+  --ink: #1e1d1b;
+  --ink-soft: #6b6863;
+  --ink-faint: #a4a09a;
+  --line: #ece9e3;
+  --surface-muted: #faf9f6;
+  --accent: #2c6e63;
+  --accent-soft: #e3f1ec;
+  --accent-dark: #204f47;
+
+  margin-bottom: 0.9rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* =========================================
+   Comment bubble
+========================================= */
 .comment-content {
-  padding: 1rem;
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 10px;
+  padding: 14px 16px;
+  background: var(--surface-muted);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  transition: border-color 0.15s ease;
+}
+
+.comment-content:hover {
+  border-color: var(--accent-soft);
 }
 
 .comment-header {
@@ -14,41 +32,76 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .comment-header strong {
-  font-size: 0.9rem;
-  color: #212529;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
 }
 
 .comment-header span {
-  font-size: 0.75rem;
-  color: #6c757d;
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  white-space: nowrap;
 }
 
 .comment-text {
-  margin: 0 0 0.5rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: #495057;
+  margin: 0 0 0.6rem;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
 }
 
+/* =========================================
+   Reply toggle
+========================================= */
 .reply-btn {
+  display: inline-flex;
+  align-items: center;
   padding: 0;
   border: 0;
   background: transparent;
-  color: #495057;
-  font-size: 0.8rem;
-  font-weight: 500;
+  color: var(--accent-dark);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: color 0.15s ease;
 }
 
 .reply-btn:hover {
-  color: #000;
+  color: var(--accent);
 }
 
+.reply-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.reply-btn i {
+  font-size: 12px;
+}
+
+/* =========================================
+   Reply form
+========================================= */
 .reply-form {
   max-width: 600px;
+}
+
+.reply-form textarea.form-control {
+  border-color: var(--line);
+  border-radius: 9px;
+  font-size: 13.5px;
+  padding: 10px 12px;
+  resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.reply-form textarea.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .reply-actions {
@@ -56,10 +109,46 @@
   gap: 0.5rem;
 }
 
+.reply-actions .btn-dark {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.reply-actions .btn-dark:hover {
+  background-color: var(--accent-dark);
+  border-color: var(--accent-dark);
+  transform: translateY(-1px);
+}
+
+.reply-actions .btn-light {
+  background-color: transparent;
+  border-color: var(--line);
+  color: var(--ink-soft);
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 6px 14px;
+  transition: all 0.15s ease;
+}
+
+.reply-actions .btn-light:hover {
+  background-color: var(--surface-muted);
+  border-color: var(--ink-faint);
+  color: var(--ink);
+}
+
+/* =========================================
+   Nested replies
+========================================= */
 .nested-replies {
   margin-left: 2rem;
   padding-left: 1rem;
-  border-left: 2px solid #e9ecef;
+  border-left: 2px solid var(--line);
   margin-top: 1rem;
 }
 
